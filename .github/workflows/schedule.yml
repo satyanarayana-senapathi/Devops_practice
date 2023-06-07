@@ -2,7 +2,7 @@ name: Scheduled Job
 
 on:
   schedule:
-    - cron: '55 9 * * *'
+    - cron: '02 10 * * *'
 #  Including paths
 #   push:
 #     paths:
@@ -44,4 +44,3 @@ jobs:
       - name: Run scheduled job
         run: |
           echo "This is a scheduled job!"
-3#
