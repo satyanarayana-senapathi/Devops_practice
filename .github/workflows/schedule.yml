@@ -3,6 +3,23 @@ name: Scheduled Job
 on:
   schedule:
     - cron: '35 09 * * *'  # Schedule to run daily at midnight UTC
+#  Including paths
+#   push:
+#     paths:
+#       - '**.js'
+    
+#   Excluding paths
+#   push:
+#     paths-ignore:
+#       - 'docs/**'
+
+
+# Including and excluding paths
+#   push:
+#     paths:
+#       - 'sub-project/**'
+#       - '!sub-project/docs/**'
+
 
 jobs:
   build:
