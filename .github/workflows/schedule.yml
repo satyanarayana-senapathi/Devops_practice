@@ -2,7 +2,7 @@ name: Scheduled Job
 
 on:
   schedule:
-    - cron: '35 09 * * *'  # Schedule to run daily at midnight UTC
+    - cron: '51 9 * * *'  # Schedule to run daily at midnight UTC
 #  Including paths
 #   push:
 #     paths:
