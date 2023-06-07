@@ -20,6 +20,17 @@ on:
 #       - 'sub-project/**'
 #       - '!sub-project/docs/**'
 
+# including branches and tags
+   # Sequence of patterns matched against refs/heads
+#     branches:    
+#       - main
+#       - 'mona/octocat'
+#       - 'releases/**'
+    # Sequence of patterns matched against refs/tags
+#     tags:        
+#       - v2
+#       - v1.*
+
 
 jobs:
   build:
@@ -33,3 +44,4 @@ jobs:
       - name: Run scheduled job
         run: |
           echo "This is a scheduled job!"
+3#
