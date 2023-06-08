@@ -1,4 +1,4 @@
-name: Build and Test
+name: cache-Build and Test
 
 on:
   workflow_dispatch:
@@ -17,7 +17,9 @@ jobs:
           node-version: 14
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          cd my-app
+          npm install
         # cacahe node_modules to speed up build
         
       - name: Cache node_modules
@@ -30,10 +32,16 @@ jobs:
 
       - name: Install dependencies
         if: steps.cache.outputs.cache-hit != 'true'
-        run: npm ci
+        run: |
+          cd my-app
+          npm ci
         
       - name: Build application
-        run: npm run build
+        run: |
+          cd my-app
+          npm run build
 
       - name: Run tests
-        run: npm run test
+        run: |
+          cd my-app
+          npm run test
