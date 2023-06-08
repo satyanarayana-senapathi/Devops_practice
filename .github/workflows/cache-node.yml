@@ -36,10 +36,6 @@ jobs:
           cd my-app
           npm ci
         
-      - name: Build application
-        run: |
-          cd my-app
-          npm run build
 
       - name: Run tests
         run: |
