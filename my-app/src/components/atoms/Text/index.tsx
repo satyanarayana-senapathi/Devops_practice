@@ -2,7 +2,7 @@ import React from 'react'
 
 const Typo = () => {
   return (
-    <h2>counter</h2>
+    <h2>counter app</h2>
   )
 }
 
