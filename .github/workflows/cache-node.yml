@@ -15,12 +15,6 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 14
-
-      - name: Install dependencies
-        run: |
-          cd my-app
-          npm install
-        # cacahe node_modules to speed up build
         
       - name: Cache node_modules
         uses: actions/cache@v2
@@ -34,7 +28,7 @@ jobs:
         if: steps.cache.outputs.cache-hit != 'true'
         run: |
           cd my-app
-          npm ci
+          npm install
         
 
       - name: Run tests
