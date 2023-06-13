@@ -40,5 +40,5 @@ jobs:
         run: |
           echo "$SSH_PRIVATE_KEY" > ssh_private_key
           chmod 600 ssh_private_key
-          ssh -i ssh_private_key -o StrictHostKeyChecking=no ubuntu@ec2-3-111-168-160.ap-south-1.compute.amazonaws.co
+          ssh -i ssh_private_key -o StrictHostKeyChecking=no ubuntu@ec2-3-111-168-160.ap-south-1.compute.amazonaws.com
            
