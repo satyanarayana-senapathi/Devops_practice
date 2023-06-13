@@ -2,9 +2,9 @@
 name: Deploy to AWS EC2
 
 on:
-#   push:
-#     branches:
-#       - main
+  push:
+    paths:
+      - 'my-app/**'
   workflow_dispatch:
 
 jobs:
@@ -36,7 +36,7 @@ jobs:
 
       - name: SSH into remote server
         env:
-          SSH_PRIVATE_KEY: ${{ ecrets.EC2_KEY }} 
+          SSH_PRIVATE_KEY: ${{ secrets.EC2_KEY }} 
         run: |
           echo "$SSH_PRIVATE_KEY" > ssh_private_key
           chmod 600 ssh_private_key

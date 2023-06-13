@@ -1,8 +1,8 @@
 name: docker image + pull from ec2
 on:
   push:
-    branches:
-      - main  
+    paths:
+      - 'my-app/**'
   workflow_dispatch:
 
 jobs:
