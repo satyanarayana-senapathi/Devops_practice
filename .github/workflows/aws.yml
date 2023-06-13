@@ -29,7 +29,7 @@ jobs:
         with:
           context: ./my-app
           push: true
-          tags: satyanarayanasvv/react-app:${{ github.sha }}
+          tags: satyanarayanasvv/react-app:latest
           dockerfile: Dockerfile
 
       - name: Deploy to EC2
