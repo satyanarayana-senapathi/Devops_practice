@@ -35,10 +35,10 @@ jobs:
 #           dockerfile: Dockerfile
 
       - name: SSH into remote server
+        env:
+          SSH_PRIVATE_KEY: ${{ ecrets.EC2_KEY }} 
         run: |
           echo "$SSH_PRIVATE_KEY" > ssh_private_key
           chmod 600 ssh_private_key
-          ssh -i ssh_private_key -o StrictHostKeyChecking=no ubuntu@ec2-3-111-168-160.ap-south-1.compute.amazonaws.com
-      - name: set environment
-        env:
-          SSH_PRIVATE_KEY: ${{ ecrets.EC2_KEY }}        
+          ssh -i ssh_private_key -o StrictHostKeyChecking=no ubuntu@ec2-3-111-168-160.ap-south-1.compute.amazonaws.co
+           
