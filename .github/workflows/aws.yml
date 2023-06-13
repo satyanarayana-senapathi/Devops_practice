@@ -39,6 +39,6 @@ jobs:
           username: ${{ secrets.AWS_USER }}
           key: ${{ secrets.EC2_KEY }}
           script: |
-            sudo docker pull satyanarayanasvv/react-app
+            sudo docker pull satyanarayanasvv/react-app:latest
           
       
