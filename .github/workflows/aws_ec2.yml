@@ -34,16 +34,15 @@ jobs:
 #           tags: satyanarayanasvv/react-app:${{ github.sha }}
 #           dockerfile: Dockerfile
 
-
-#         - name: SSH into remote server
-#           run: |
-#             echo "$SSH_PRIVATE_KEY" > ssh_private_key
-#             chmod 600 ssh_private_key
-#             ssh -i ssh_private_key -o StrictHostKeyChecking=no ubuntu@ec2-3-111-168-160.ap-south-1.compute.amazonaws.com
-#         env:
-#           SSH_PRIVATE_KEY: ${{ ecrets.EC2_KEY }}
+      - name: SSH into remote server
+        run: |
+          echo "$SSH_PRIVATE_KEY" > ssh_private_key
+          chmod 600 ssh_private_key
+          ssh -i ssh_private_key -o StrictHostKeyChecking=no ubuntu@ec2-3-111-168-160.ap-south-1.compute.amazonaws.com
+        env:
+          SSH_PRIVATE_KEY: ${{ ecrets.EC2_KEY }}
 
         
-      - name: SSH into EC2 instance and pull Docker image
-        run: |
-            ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_KEY }} ubuntu@ec2-3-111-168-160.ap-south-1.compute.amazonaws.com           
+#       - name: SSH into EC2 instance and pull Docker image
+#         run: |
+#             ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_KEY }} ubuntu@ec2-3-111-168-160.ap-south-1.compute.amazonaws.com           
