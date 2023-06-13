@@ -36,4 +36,4 @@ jobs:
         
       - name: SSH into EC2 instance and pull Docker image
         run: |
-            ssh -o StrictHostKeyChecking=no -i ${{ secrets.EC2_PRIVATE_KEY }} ubuntu@ec2-3-111-168-160.ap-south-1.compute.amazonaws.com           
+            ssh -o StrictHostKeyChecking=no -i ${{ secrets.secrets.EC2_KEY }} ubuntu@ec2-3-111-168-160.ap-south-1.compute.amazonaws.com           
