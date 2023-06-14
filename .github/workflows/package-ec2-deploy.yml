@@ -54,7 +54,7 @@ jobs:
           chmod 400 ~/ssh_private_key
           ssh -i ~/ssh_private_key -o StrictHostKeyChecking=no ubuntu@$AWS_DNS '
             echo test;
-            echo $PAT | docker login ghcr.io -u $USERNAME --password-stdin;
+            docker login ghcr.io -u $USERNAME --password $PAT;
             docker pull ghcr.io/satyanarayana-zemoso/spring-boot-app:$RUN_NUMBER;
             docker logout ghcr.io;
             
