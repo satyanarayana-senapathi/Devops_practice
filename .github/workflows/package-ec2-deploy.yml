@@ -1,0 +1,43 @@
+
+name: Deploy to AWS EC2
+
+on:
+  push:
+    paths:
+      - 'my-app/**'
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+         registry: ghcr.io
+         username: ${{ github.actor }}
+         password: ${{ secrets.GITPASS }}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./my-app
+          push: true
+          tags: ghcr.io/satyanarayana-zemoso/react-app:${{ github.sha }}
+          dockerfile: Dockerfile
+
+      - name: SSH into remote server
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.EC2_KEY }} 
+          github_sha: ${{ github.sha }}
+          AWS_USER : ${{ secrets.AWS_USER }}
+        run: |
+          echo "$SSH_PRIVATE_KEY" > ssh_private_key
+          chmod 400 ssh_private_key
+          ssh -i ssh_private_key -o StrictHostKeyChecking=no ubuntu@$AWS_USER
+          sudo docker pull ghcr.io/satyanarayana-zemoso/springapp:1.0
+           
