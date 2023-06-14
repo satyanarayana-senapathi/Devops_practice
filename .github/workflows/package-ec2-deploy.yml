@@ -52,13 +52,12 @@ jobs:
         run: |
           echo "$SSH_PRIVATE_KEY" > ~/ssh_private_key
           chmod 400 ~/ssh_private_key
-          ssh -i ~/ssh_private_key -o StrictHostKeyChecking=no ubuntu@$AWS_DNS '
+          ssh -i ~/ssh_private_key -o StrictHostKeyChecking=no ubuntu@$AWS_DNS "
             echo test;
             docker login ghcr.io -u $USERNAME --password $PAT;
             docker pull ghcr.io/satyanarayana-zemoso/spring-boot-app:$RUN_NUMBER;
             docker logout ghcr.io;
-            
-            '
+            "
           
 
 
