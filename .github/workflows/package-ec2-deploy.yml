@@ -1,4 +1,3 @@
-
 name: Deploy from GHCR to AWS EC2
 
 on:
@@ -51,11 +50,10 @@ jobs:
           USERNAME: ${{ github.actor }}
           PAT: ${{ secrets.GITPASS }}
         run: |
-          echo "$SSH_PRIVATE_KEY" > ssh_private_key
-          chmod 400 ssh_private_key
-          ssh -i ssh_private_key -o StrictHostKeyChecking=no ubuntu@$AWS_DNS '
-            echo ${{ secrets.GITPASS }} | docker login ghcr.io -u $USERNAME --password-stdin 
+          echo "$SSH_PRIVATE_KEY" > ~/ssh_private_key
+          chmod 400 ~/ssh_private_key
+          ssh -i ~/ssh_private_key -o StrictHostKeyChecking=no ubuntu@$AWS_DNS '
+            echo $PAT | docker login ghcr.io -u $USERNAME --password-stdin 
             docker pull ghcr.io/satyanarayana-zemoso/spring-boot-app:$RUN_NUMBER
             docker logout ghcr.io
-            '
-           
+          '
