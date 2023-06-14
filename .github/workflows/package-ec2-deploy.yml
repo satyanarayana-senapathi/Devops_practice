@@ -39,6 +39,8 @@ jobs:
 #           push: true
 #           tags: ghcr.io/satyanarayana-zemoso/spring-boot-app:${{ github.run_number }}
 #           dockerfile: Dockerfile
+#   sudo docker login ghcr.io -u $USERNAME -p $PAT
+#           sudo docker pull ghcr.io/satyanarayana-zemoso/spring-boot-app:4
 
       - name: SSH into remote server
         env:
@@ -51,8 +53,7 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > ssh_private_key
           chmod 400 ssh_private_key
           ssh -i ssh_private_key -o StrictHostKeyChecking=no ubuntu@$AWS_USER
-          sudo docker login ghcr.io -u $USERNAME -p $PAT
-          sudo docker pull ghcr.io/satyanarayana-zemoso/spring-boot-app:4
+          sudo docker pull ghcr.io/satyanarayana-zemoso/springapp:1.0
           sudo docker images
           hostname -I
            
