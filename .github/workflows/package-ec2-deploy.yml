@@ -53,7 +53,7 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > ssh_private_key
           chmod 400 ssh_private_key
           ssh -i ssh_private_key -o StrictHostKeyChecking=no ubuntu@$AWS_USER
-          sudo docker pull ghcr.io/satyanarayana-zemoso/springapp:1.0
-          sudo docker images
+          docker pull ghcr.io/satyanarayana-zemoso/springapp:1.0
+          docker images
           hostname -I
            
