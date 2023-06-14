@@ -53,4 +53,5 @@ jobs:
           ssh -i ssh_private_key -o StrictHostKeyChecking=no ubuntu@$AWS_USER
           sudo docker login ghcr.io -u $USERNAME -p $PAT
           sudo docker pull ghcr.io/satyanarayana-zemoso/spring-boot-app:$RUN_NUMBER
+          sudo docker images
            
