@@ -31,16 +31,18 @@ jobs:
         with:
           context: ./my-app
           push: true
-          tags: satyanarayanasvv/react-app:${{ github.sha }}
+          tags: ${{ secrets.DOCKER_REPO }}:${{ github.sha }}
           dockerfile: Dockerfile
 
       - name: SSH into remote server
         env:
           SSH_PRIVATE_KEY: ${{ secrets.EC2_KEY }} 
           github_sha: ${{ github.sha }}
+          AWS_USER : ${{ secrets.AWS_USER }}
+          DOCKER_REPO: ${{ secrets.DOCKER_REPO }}
         run: |
           echo "$SSH_PRIVATE_KEY" > ssh_private_key
-          chmod 600 ssh_private_key
-          ssh -i ssh_private_key -o StrictHostKeyChecking=no ubuntu@ec2-3-111-168-160.ap-south-1.compute.amazonaws.com
-          sudo docker run -d -p  80:3000 satyanarayanasvv/react-app:$github_sha
+          chmod 400 ssh_private_key
+          ssh -i ssh_private_key -o StrictHostKeyChecking=no ubuntu@$AWS_USER
+          sudo docker run -d -p  80:80 $DOCKER_REPO:$github_sha
            
