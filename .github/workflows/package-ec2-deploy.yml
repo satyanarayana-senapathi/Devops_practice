@@ -35,9 +35,12 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.EC2_KEY }} 
           github_sha: ${{ github.sha }}
           AWS_USER : ${{ secrets.AWS_USER }}
+          USERNAME: ${{ github.actor }}
+          PAT: ${{ secrets.GITPASS }}
         run: |
           echo "$SSH_PRIVATE_KEY" > ssh_private_key
           chmod 400 ssh_private_key
           ssh -i ssh_private_key -o StrictHostKeyChecking=no ubuntu@$AWS_USER
-          sudo docker pull ghcr.io/satyanarayana-zemoso/springapp:1.0
+          sudo docker login ghcr.io -u $USERNAME -p $PAT
+          sudo docker pull ghcr.io/satyanarayana-zemoso/react-app:$github_sha
            
