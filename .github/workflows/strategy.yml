@@ -5,8 +5,9 @@ name: working with strategies
 on:
   # push:
   #   branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+  push:
+    paths:
+      - '.github/workflows/strategy.yml'
 jobs:
   test:
     runs-on: ${{ matrix.os }}

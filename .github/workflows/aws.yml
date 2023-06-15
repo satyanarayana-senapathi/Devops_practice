@@ -3,7 +3,7 @@ on:
   push:
     paths:
       - 'my-app/**'
-  workflow_dispatch:
+      - '.github/workflows/aws.yml'
 
 jobs:
   build:

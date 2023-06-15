@@ -1,9 +1,9 @@
 name: Hello World
 
 on: 
-  pull_request:
-    branches:
-      -main
+  push:
+    paths:
+      - '.github/workflows/main.yml'
 
 jobs:
   hello-world-job:

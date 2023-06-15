@@ -1,9 +1,10 @@
 name: Docker Build and Push 
 
 on:
-  pull_request:
-    branches:
-      - main
+  push:
+    paths:
+      - 'my-app/**'
+      - '.github/workflows/docker-react.yml'
 
 jobs:
   build:

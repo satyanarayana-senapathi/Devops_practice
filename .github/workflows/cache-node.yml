@@ -1,7 +1,9 @@
 name: cache-Build and Test
 
 on:
-  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/cache-node.yml'
 
 jobs:
   build:

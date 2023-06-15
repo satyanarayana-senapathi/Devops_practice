@@ -5,7 +5,7 @@ on:
   push:
     paths:
       - 'my-app/**'
-  workflow_dispatch:
+      - '.github/workflows/aws_ec2.yml'
 
 jobs:
   deploy:

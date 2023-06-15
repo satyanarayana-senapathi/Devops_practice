@@ -1,6 +1,9 @@
 name: Scheduled Job
 
-on: pull_request
+on:
+  push:
+    paths:
+      - '.github/workflows/schedule.yml'
 #   schedule:
 #     - cron: '5 * * * *'
 #  Including paths

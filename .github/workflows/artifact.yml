@@ -1,6 +1,8 @@
 name: artifacts
 on: 
-  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/artifact.yml'
 jobs:
   build:
     runs-on: ubuntu-latest

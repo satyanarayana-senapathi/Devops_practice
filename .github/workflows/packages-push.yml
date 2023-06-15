@@ -1,7 +1,10 @@
 name: packages-push
 
 on:
-  workflow_dispatch:
+  push:
+    paths:
+      - 'spring-boot-app/**'
+      - '.github/workflows/packages-push.yml'
 
 jobs:
   build:
