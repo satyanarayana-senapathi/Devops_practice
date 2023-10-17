@@ -4,6 +4,7 @@ pipeline {
     tools {
         // This 'maven' corresponds to the name of the Maven installation in Jenkins' Global Tool Configuration.
         maven 'maven-3'
+         docker 'docker'
     }
 
 
