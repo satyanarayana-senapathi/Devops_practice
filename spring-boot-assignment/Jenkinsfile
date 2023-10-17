@@ -1,6 +1,12 @@
 pipeline {
     agent any
 
+    tools {
+        // This 'maven' corresponds to the name of the Maven installation in Jenkins' Global Tool Configuration.
+        maven 'maven-3'
+    }
+
+
     environment {
         // Use your GHCR repository name
         DOCKER_IMAGE = 'ghcr.io/satyanarayana-senapathi/jenkins-test:latest'
@@ -12,8 +18,7 @@ pipeline {
         stage('Build with Maven') {
             steps {
                 script {
-                    def mvnHome = tool name: 'maven-3', type: 'maven'
-                    sh '${mvnHome}/bin/mvn clean install'
+                    sh 'mvn clean install'
                 }
             }
         }
