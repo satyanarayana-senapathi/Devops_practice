@@ -33,17 +33,8 @@ pipeline {
         stage('GHCR Login ') {
             steps {
                    sh 'echo $GHCR_TOKEN_PSW | sudo docker login -u $GHCR_TOKEN_USR --password-stdin'
-                }
-            }
-        }
-        
-        stage('Push to GHCR') {
-            steps {
-                script {
-                    // Push the Docker image
                     sh "sudo docker push ${DOCKER_IMAGE}"
                 }
             }
-        }
-    
+        } 
 }
