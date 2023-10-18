@@ -10,8 +10,6 @@ pipeline {
     environment {
         // Use your GHCR repository name
         DOCKER_IMAGE = 'ghcr.io/satyanarayana-senapathi/jenkins-test:latest'
-        // GitHub token for authentication
-        GHCR_TOKEN = credentials('GHCR-TOKEN-ID')
     }
 
     stages {
@@ -31,12 +29,20 @@ pipeline {
                 }
             }
         }
+        stage('GHCR Login ') {
+            steps {
+                // Use the withCredentials step to bind the secret to an environment variable
+                withCredentials([string(credentialsId: 'GHCR-TOKEN-ID', variable: 'GHCR_TOKEN')]) {
+                    sh """
+                       echo $GHCR_TOKEN | sudo docker login ghcr.io -u satyanarayana-senapathi --password-stdin
+                    """
+                }
+            }
+        }
         
         stage('Push to GHCR') {
             steps {
                 script {
-                    // Login to GHCR
-                    sh "echo $GHCR_TOKEN | sudo docker login ghcr.io -u satyanarayana-senapathi --password-stdin"
                     // Push the Docker image
                     sh "sudo docker push ${DOCKER_IMAGE}"
                 }
