@@ -28,7 +28,7 @@ pipeline {
 stage('Build application') {
             steps {
                 dir('my-app') {
-                    sh 'npm install'
+                    sh 'npm install --legacy-peer-deps'
                     sh 'npm run build'
                 }
                 // sh 'npm install --legacy-peer-deps'
