@@ -1,0 +1,91 @@
+pipeline {
+    agent any
+
+    tools {
+        // This 'maven' corresponds to the name of the Maven installation in Jenkins' Global Tool Configuration.
+        NodeJs 'node'
+    }
+
+
+    environment {
+        // Use your GHCR repository name
+        DOCKER_IMAGE = 'ghcr.io/satyanarayana-senapathi/jenkins-frontend:latest'
+        GHCR_TOKEN = credentials('GHCR-TOKEN-ID')
+    }
+
+    stages {
+        stage('Checkout code') {
+            steps {
+                checkout scm
+            }
+        }
+
+        // stage('Set up Node.js') {
+        //     steps {
+        //         tool name: 'NodeJS-18', type: 'jenkins.plugins.nodejs.tools.NodeJSInstallation'
+        //     }
+        // }
+stage('Build application') {
+            steps {
+                dir('my-app') {
+                    sh 'npm install'
+                    sh 'npm run build'
+                }
+                // sh 'npm install --legacy-peer-deps'
+                // sh 'npm run build'
+            }
+        }
+        
+        stage('Build Docker image') {
+            steps {
+                script {
+                    sh "sudo docker build -t ${DOCKER_IMAGE} -f ./my-app/Dockerfile ./my-app"
+                }
+            }
+        }
+        stage('GHCR Login ') {
+            steps {
+                   sh 'echo $GHCR_TOKEN_PSW | sudo docker login ghcr.io -u $GHCR_TOKEN_USR --password-stdin'
+                    sh "sudo docker push ${DOCKER_IMAGE}"
+                }
+            }
+
+        stage('Deploy to EC2 from GitHub Packages') {
+            steps {
+                // Fetch SSH key for EC2 and GHCR credentials securely
+                withCredentials([sshUserPrivateKey(credentialsId: 'SSH_KEY', keyFileVariable: 'SSH_KEY')])
+                     {
+                    script {
+                        catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
+                            sh '''
+                                # SSH into the EC2 instance
+                                ssh -i $SSH_KEY -o StrictHostKeyChecking=no  ubuntu@ec2-18-219-228-137.us-east-2.compute.amazonaws.com "
+                                
+                                # Login to GHCR
+                                docker login ghcr.io -u $GHCR_TOKEN_USR -p $GHCR_TOKEN_PSW
+                                
+                                # Stop and remove any existing frontend container
+                                docker stop fr || true
+                                docker rm fr || true
+                                
+                                # Remove existing image if present
+                                docker rmi ghcr.io/satyanarayana-senapathi/jenkins-frontend:latest -f || true
+                                
+                                # Pull the latest Docker image from GHCR
+                                docker pull ghcr.io/satyanarayana-senapathi/jenkins-frontend:latest
+                                
+                                # Run the new Docker container
+                                docker run --name fr -d -p 8081:8080 ghcr.io/satyanarayana-senapathi/jenkins-frontend:latest
+                                
+                                # Logout from GHCR
+                                docker logout ghcr.io
+                                "
+                            '''
+                        }
+                    }
+                }
+    }
+}
+
+        } 
+}
