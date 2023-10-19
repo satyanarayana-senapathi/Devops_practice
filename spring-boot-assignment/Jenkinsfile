@@ -36,23 +36,60 @@ pipeline {
                     sh "sudo docker push ${DOCKER_IMAGE}"
                 }
             }
+        // stage('Deploy to EC2 from GitHub Packages') {
+        // steps {
+        //     withCredentials([sshUserPrivateKey(credentialsId: 'SSH_KEY', keyFileVariable: 'SSH_KEY')]) {
+        //         script {
+        //             sh '''
+        //                 ssh -i $SSH_KEY -o StrictHostKeyChecking=no ubuntu@ec2-54-197-119-229.compute-1.amazonaws.com '
+        //                 docker login ghcr.io -u $GHCR_TOKEN_USR -p $GHCR_TOKEN_PSW && \
+        //                 docker stop frontend || true && \
+        //                 docker rm frontend || true && \
+        //                 docker rmi ghcr.io/$GITHUB_USER/jenkins-test:latest -f || true && \
+        //                 docker pull ghcr.io/$GITHUB_USER/jenkins-test:latest && \
+        //                 docker run --name frontend -d -p 8081:8080 ghcr.io/$GITHUB_USER/jenkins-test:latest && \
+        //                 docker logout ghcr.io'
+        //             '''
+        //                     }
+        //                 }
+        //         }
+        //     }
         stage('Deploy to EC2 from GitHub Packages') {
-        steps {
-            withCredentials([sshUserPrivateKey(credentialsId: 'SSH_KEY', keyFileVariable: 'SSH_KEY')]) {
-                script {
+    steps {
+        // Fetch SSH key for EC2 and GHCR credentials securely
+        withCredentials([sshUserPrivateKey(credentialsId: 'SSH_KEY', keyFileVariable: 'SSH_KEY'),
+                         usernamePassword(credentialsId: 'GHCR_CREDENTIALS', usernameVariable: 'GHCR_TOKEN_USR', passwordVariable: 'GHCR_TOKEN_PSW')]) {
+            script {
+                catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                     sh '''
+                        # SSH into the EC2 instance
                         ssh -i $SSH_KEY -o StrictHostKeyChecking=no ubuntu@ec2-54-197-119-229.compute-1.amazonaws.com '
-                        docker login ghcr.io -u $GHCR_TOKEN_USR -p $GHCR_TOKEN_PSW && \
-                        docker stop frontend || true && \
-                        docker rm frontend || true && \
-                        docker rmi ghcr.io/$GITHUB_USER/jenkins-test:latest -f || true && \
-                        docker pull ghcr.io/$GITHUB_USER/jenkins-test:latest && \
-                        docker run --name frontend -d -p 8081:8080 ghcr.io/$GITHUB_USER/jenkins-test:latest && \
-                        docker logout ghcr.io'
+                        
+                        # Login to GHCR
+                        docker login ghcr.io -u $GHCR_TOKEN_USR -p $GHCR_TOKEN_PSW
+                        
+                        # Stop and remove any existing frontend container
+                        docker stop frontend || true
+                        docker rm frontend || true
+                        
+                        # Remove existing image if present
+                        docker rmi ghcr.io/$GITHUB_USER/jenkins-test:latest -f || true
+                        
+                        # Pull the latest Docker image from GHCR
+                        docker pull ghcr.io/$GITHUB_USER/jenkins-test:latest
+                        
+                        # Run the new Docker container
+                        docker run --name frontend -d -p 8081:8080 ghcr.io/$GITHUB_USER/jenkins-test:latest
+                        
+                        # Logout from GHCR
+                        docker logout ghcr.io
+                        '
                     '''
-                            }
-                        }
                 }
             }
+        }
+    }
+}
+
         } 
 }
