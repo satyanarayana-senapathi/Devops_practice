@@ -1,10 +1,10 @@
 pipeline {
     agent any
 
-    tools {
-        // This 'maven' corresponds to the name of the Maven installation in Jenkins' Global Tool Configuration.
-        NodeJs 'node'
-    }
+    // tools {
+    //     // This 'maven' corresponds to the name of the Maven installation in Jenkins' Global Tool Configuration.
+    //     NodeJs 'node'
+    // }
 
 
     environment {
@@ -20,11 +20,11 @@ pipeline {
             }
         }
 
-        // stage('Set up Node.js') {
-        //     steps {
-        //         tool name: 'NodeJS-18', type: 'jenkins.plugins.nodejs.tools.NodeJSInstallation'
-        //     }
-        // }
+        stage('Set up Node.js') {
+            steps {
+                tool name: 'NodeJS-18', type: 'jenkins.plugins.nodejs.tools.NodeJSInstallation'
+            }
+        }
 stage('Build application') {
             steps {
                 dir('my-app') {
