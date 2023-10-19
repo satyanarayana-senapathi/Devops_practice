@@ -57,8 +57,8 @@ pipeline {
         stage('Deploy to EC2 from GitHub Packages') {
     steps {
         // Fetch SSH key for EC2 and GHCR credentials securely
-        withCredentials([sshUserPrivateKey(credentialsId: 'SSH_KEY', keyFileVariable: 'SSH_KEY'),
-                         usernamePassword(credentialsId: 'GHCR_CREDENTIALS', usernameVariable: 'GHCR_TOKEN_USR', passwordVariable: 'GHCR_TOKEN_PSW')]) {
+        withCredentials([sshUserPrivateKey(credentialsId: 'SSH_KEY', keyFileVariable: 'SSH_KEY')])
+             {
             script {
                 catchError(buildResult: 'FAILURE', stageResult: 'FAILURE') {
                     sh '''
