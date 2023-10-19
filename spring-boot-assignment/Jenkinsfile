@@ -36,5 +36,23 @@ pipeline {
                     sh "sudo docker push ${DOCKER_IMAGE}"
                 }
             }
+        stage('Deploy to EC2 from GitHub Packages') {
+        steps {
+            withCredentials([sshUserPrivateKey(credentialsId: 'SSH_KEY', keyFileVariable: 'SSH_KEY')]) {
+                script {
+                    sh '''
+                        ssh -i $SSH_KEY -o StrictHostKeyChecking=no ubuntu@ec2-54-197-119-229.compute-1.amazonaws.com '
+                        docker login ghcr.io -u $GHCR_TOKEN_USR -p $GHCR_TOKEN_PSW && \
+                        docker stop frontend || true && \
+                        docker rm frontend || true && \
+                        docker rmi ghcr.io/$GITHUB_USER/jenkins-test:latest -f || true && \
+                        docker pull ghcr.io/$GITHUB_USER/jenkins-test:latest && \
+                        docker run --name frontend -d -p 8081:8080 ghcr.io/$GITHUB_USER/jenkins-test:latest && \
+                        docker logout ghcr.io'
+                    '''
+                            }
+                        }
+                }
+            }
         } 
 }
