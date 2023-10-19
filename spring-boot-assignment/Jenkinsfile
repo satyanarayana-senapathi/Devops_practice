@@ -76,7 +76,7 @@ pipeline {
                         docker rmi ghcr.io/$GITHUB_USER/jenkins-test:latest -f || true
                         
                         # Pull the latest Docker image from GHCR
-                        docker pull ghcr.io/$GITHUB_USER/jenkins-test:latest
+                        docker pull ghcr.io/satyanarayana-senapathhi/jenkins-test:latest
                         
                         # Run the new Docker container
                         docker run --name frontend -d -p 8081:8080 ghcr.io/$GITHUB_USER/jenkins-test:latest
