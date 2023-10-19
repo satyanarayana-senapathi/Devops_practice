@@ -9,8 +9,8 @@
 
 # Stage 2
 FROM nginx:alpine
-WORKDIR /app
-COPY /app/build /usr/share/nginx/html
+
+COPY build /usr/share/nginx/html
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
 
