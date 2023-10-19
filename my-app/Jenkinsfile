@@ -22,7 +22,7 @@ pipeline {
 
         stage('Set up Node.js') {
             steps {
-                tool name: 'NodeJS-18', type: 'jenkins.plugins.nodejs.tools.NodeJSInstallation'
+                tool name: 'node', type: 'jenkins.plugins.nodejs.tools.NodeJSInstallation'
             }
         }
 stage('Build application') {
