@@ -25,16 +25,16 @@ pipeline {
         //         tool name: 'node', type: 'jenkins.plugins.nodejs.tools.NodeJSInstallation'
         //     }
         // }
-stage('Build application') {
-            steps {
-                dir('my-app') {
-                    sh 'npm install --legacy-peer-deps'
-                    sh 'npm run build'
-                }
-                // sh 'npm install --legacy-peer-deps'
-                // sh 'npm run build'
-            }
-        }
+// stage('Build application') {
+//             steps {
+//                 dir('my-app') {
+//                     sh 'npm install --legacy-peer-deps'
+//                     sh 'npm run build'
+//                 }
+//                 // sh 'npm install --legacy-peer-deps'
+//                 // sh 'npm run build'
+//             }
+//         }
         
         stage('Build Docker image') {
             steps {
