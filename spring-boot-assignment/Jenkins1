@@ -38,12 +38,16 @@ pipeline {
             }
         stage('Integrate Jenkins with EKS Cluster and Deploy App') {
             steps {
-                withAWS(credentials: 'AWS_CREDENTIALS', region: 'us-east-1') {
-                  script {
-                    sh ('aws eks update-kubeconfig --name jenkins --region us-east-1')
-                    
+                withCredentials([[
+                    $class: 'AmazonWebServicesCredentialsBinding',
+                    credentialsId: "AWS_CREDENTIALS",
+                    accessKeyVariable: 'AWS_ACCESS_KEY_ID',
+                    secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
+                ]]) {
+                    // AWS Code
+                     sh ('aws eks update-kubeconfig --name jenkins --region us-east-1')
                 }
-                }
+                
         }
         }
     }
