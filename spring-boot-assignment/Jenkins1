@@ -10,7 +10,7 @@ pipeline {
         // Use your GHCR repository name
         DOCKER_IMAGE = 'ghcr.io/satyanarayana-senapathi/jenkins-test'
         DOCKER_TAG = "${env.BUILD_NUMBER}"
-        GHCR_TOKEN = credentials('GHCR-TOKEN-ID')
+        GHCR_TOKEN = credentials('GHCR-TOKEN')
     }
 
     stages {
