@@ -1,7 +1,5 @@
 pipeline {
-    agent {
-    label 'slave-1'
-}
+    agent any
 
     tools {
         // This 'maven' corresponds to the name of the Maven installation in Jenkins' Global Tool Configuration.
