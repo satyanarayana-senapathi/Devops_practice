@@ -13,6 +13,13 @@ pipeline {
     }
 
     stages {
+        stage('Do the magic') {
+       // Below condition you can change based on your usecase
+        when { changeset "./spring-boot-assignment/*"}
+        steps {
+            sh "uptime"
+        }
+    }
         stage('Build with Maven') {
             steps {
                 script {
