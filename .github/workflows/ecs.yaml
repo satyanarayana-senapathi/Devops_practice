@@ -131,7 +131,7 @@ jobs:
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: task-definition.json
+          task-definition: ./my-app/task-definition.json
           container-name: sample_app
           image: 365299945243.dkr.ecr.us-east-1.amazonaws.com/demo-practice:v${{ github.run_number }}
   
