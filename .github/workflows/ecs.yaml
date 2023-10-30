@@ -96,7 +96,7 @@ jobs:
           aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Retrieve the env vars
-        run: echo " ${{secrets.taksdef}}" > task-definition.json
+        run: echo " ${{secrets.TAKSDEF}}" > task-definition.json
        
 
 
