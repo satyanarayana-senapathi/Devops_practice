@@ -1,11 +1,11 @@
-name: BOOTCAMP126 - Frontend deployment 
+name: Frontend deployment 
 run-name: Frontend deployment update triggered by ${{ github.actor }}.
 on:
   push:
     branches:
       - "practice-ecs"
     paths:
-      - 'frontend/**'
+      - 'my-app/**'
       - '.github/workflows/ecs.yaml'
 jobs:
   build:
@@ -13,7 +13,7 @@ jobs:
     timeout-minutes: 10
     defaults:
         run:
-          working-directory: frontend
+          working-directory: my-app
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
