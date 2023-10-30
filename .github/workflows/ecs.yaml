@@ -15,13 +15,13 @@ jobs:
         run:
           working-directory: my-app
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      # - name: Checkout code
+      #   uses: actions/checkout@v3
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 18
+      # - name: Set up Node.js
+      #   uses: actions/setup-node@v3
+      #   with:
+      #     node-version: 18
 
       # - name: Cache node_modules
       #   uses: actions/cache@v2
@@ -53,26 +53,26 @@ jobs:
       #     aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
       #     aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       #     aws_default_region: ${{ env.AWS_REGION}}
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
+      # - name: Configure AWS Credentials
+      #   uses: aws-actions/configure-aws-credentials@v1
+      #   with:
+      #     aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: login to ecr
-        run: | 
-          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 365299945243.dkr.ecr.us-east-1.amazonaws.com/demo-practice
+      # - name: login to ecr
+      #   run: | 
+      #     aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 365299945243.dkr.ecr.us-east-1.amazonaws.com/demo-practice
 
-      - name: Build and Push Docker Image
-        uses: docker/build-push-action@v2
-        with:
-          context: ./my-app
-          push: true
-          tags: 365299945243.dkr.ecr.us-east-1.amazonaws.com/demo-practice:v${{ github.run_number }}
+      # - name: Build and Push Docker Image
+      #   uses: docker/build-push-action@v2
+      #   with:
+      #     context: ./my-app
+      #     push: true
+      #     tags: 365299945243.dkr.ecr.us-east-1.amazonaws.com/demo-practice:v${{ github.run_number }}
         
-      - name: update ecs service and task definition
-        run: aws ecs update-service --cluster demo-practice --service demo-service --task-definition arn:aws:ecs:us-east-1:365299945243:task-definition/demo-practice-task:1
+      # - name: update ecs service and task definition
+      #   run: aws ecs update-service --cluster demo-practice --service demo-service --task-definition arn:aws:ecs:us-east-1:365299945243:task-definition/demo-practice-task:1
 
       # - name: adding eks-cluster and deployment
       #   env: 
@@ -82,3 +82,51 @@ jobs:
       #   run: |
       #     aws eks --region $aws_region update-kubeconfig --name $cluster_name
       #     kubectl set image deployment/frontend-deployment frontend-container=$IMAGE
+
+
+
+
+
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Retrieve the env vars
+        run: echo " ${{secrets.taksdef}}" > task-definition.json
+       
+
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+  
+      - name: Build, tag, and push image to Amazon ECR
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: demo-practice
+          IMAGE_TAG: v${{ github.run_number }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ./my-app/Dockerfile ./my-app
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
+  
+      - name: Fill in the new image ID in the Amazon ECS task definition
+        id: task-def
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: task-definition.json
+          container-name: sample_app
+          image: ${{ steps.build-image.outputs.image }}
+  
+      - name: Deploy Amazon ECS task definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-def.outputs.task-definition }}
+          service: demo-service
+          cluster: demo-practice
+          wait-for-service-stability: true
