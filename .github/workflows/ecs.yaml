@@ -71,7 +71,8 @@ jobs:
           push: true
           tags: 365299945243.dkr.ecr.us-east-1.amazonaws.com/demo-practice:v${{ github.run_number }}
         
-     
+      - name: update ecs service and task definition
+        run: aws ecs update-service --cluster demo-practice --service demo-service --task-definition arn:aws:ecs:us-east-1:365299945243:task-definition/demo-practice-task:1
 
       # - name: adding eks-cluster and deployment
       #   env: 
