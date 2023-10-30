@@ -1,0 +1,83 @@
+name: BOOTCAMP126 - Frontend deployment 
+run-name: Frontend deployment update triggered by ${{ github.actor }}.
+on:
+  push:
+    branches:
+      - "practice-ecs"
+    paths:
+      - 'frontend/**'
+      - '.github/workflows/ecs.yaml'
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    defaults:
+        run:
+          working-directory: frontend
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      # - name: Cache node_modules
+      #   uses: actions/cache@v2
+      #   with:
+      #     path: frontend/node_modules
+      #     key: ${{ runner.os }}-node-${{ hashFiles('**/package.json') }}
+
+      # - name: Install dependencies
+      #   if: steps.cache.outputs.cache-hit != 'true'
+      #   run: npm install --legacy-peer-deps
+
+      # - name: Retrieve the env vars
+      #   run: echo "${{ secrets.FE_ENV }}" > .env
+
+      # - name: Build application
+      #   run: npm run build
+
+      # - name: Login to GitHub Container Registry
+      #   uses: docker/login-action@v1
+      #   with:
+      #    registry: ghcr.io
+      #    username: ${{ secrets.GHCR_USERNAME }}
+      #    password: ${{ secrets.GHCR_PAT }}
+
+      # - name: Build and Push Container to ECR
+      #   uses: GlueOps/github-actions-build-push-containers@v0.3.2
+      #   with:
+      #     registry: "365299945243.dkr.ecr.us-east-1.amazonaws.com/demo-practice"
+      #     aws_access_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     aws_default_region: ${{ env.AWS_REGION}}
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: login to ecr
+        run: | 
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 365299945243.dkr.ecr.us-east-1.amazonaws.com/demo-practice
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./my-app
+          push: true
+          tags: 365299945243.dkr.ecr.us-east-1.amazonaws.com/demo-practice:v${{ github.run_number }}
+        
+     
+
+      # - name: adding eks-cluster and deployment
+      #   env: 
+      #     aws_region: ${{ secrets.AWS_REGION }}
+      #     cluster_name: ${{ secrets.CLUSTER_NAME }}
+      #     IMAGE: ghcr.io/${{ secrets.GHCR_USERNAME }}/bootcamp126-frontend:v${{ github.run_number }}
+      #   run: |
+      #     aws eks --region $aws_region update-kubeconfig --name $cluster_name
+      #     kubectl set image deployment/frontend-deployment frontend-container=$IMAGE
