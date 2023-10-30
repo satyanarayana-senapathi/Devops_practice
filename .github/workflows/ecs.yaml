@@ -100,20 +100,32 @@ jobs:
        
 
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+      # - name: Login to Amazon ECR
+      #   id: login-ecr
+      #   uses: aws-actions/amazon-ecr-login@v1
   
-      - name: Build, tag, and push image to Amazon ECR
-        id: build-image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: demo-practice
-          IMAGE_TAG: v${{ github.run_number }}
-        run: |
-          docker build -t 365299945243.dkr.ecr.us-east-1.amazonaws.com/demo-practice:$IMAGE_TAG ./my-app
-          docker push 365299945243.dkr.ecr.us-east-1.amazonaws.com/demo-practice:$IMAGE_TAG
-          echo "image=365299945243.dkr.ecr.us-east-1.amazonaws.com/demo-practice:$IMAGE_TAG" >> $GITHUB_OUTPUT
+      # - name: Build, tag, and push image to Amazon ECR
+      #   id: build-image
+      #   env:
+      #     ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      #     ECR_REPOSITORY: demo-practice
+      #     IMAGE_TAG: v${{ github.run_number }}
+      #   run: |
+      #     docker build -t 365299945243.dkr.ecr.us-east-1.amazonaws.com/demo-practice:$IMAGE_TAG ./my-app
+      #     docker push 365299945243.dkr.ecr.us-east-1.amazonaws.com/demo-practice:$IMAGE_TAG
+      #     echo "image=365299945243.dkr.ecr.us-east-1.amazonaws.com/demo-practice:$IMAGE_TAG" >> $GITHUB_OUTPUT
+
+      - name: login to ecr
+        run: | 
+          aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 365299945243.dkr.ecr.us-east-1.amazonaws.com/demo-practice
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v2
+        with:
+          context: ./my-app
+          push: true
+          tags: 365299945243.dkr.ecr.us-east-1.amazonaws.com/demo-practice:v${{ github.run_number }}
+        
   
       - name: Fill in the new image ID in the Amazon ECS task definition
         id: task-def
@@ -121,7 +133,7 @@ jobs:
         with:
           task-definition: task-definition.json
           container-name: sample_app
-          image: ${{ steps.build-image.outputs.image }}
+          image: 365299945243.dkr.ecr.us-east-1.amazonaws.com/demo-practice:v${{ github.run_number }}
   
       - name: Deploy Amazon ECS task definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
